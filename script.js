@@ -22,13 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // 導航和內容區塊元素
     const navCalculate = document.getElementById('navCalculate');
     const navHistory = document.getElementById('navHistory');
-    const navFurnitureType = document.getElementById('navFurnitureType'); // 新增：家具種類導航
-    const navRemoteArea = document.getElementById('navRemoteArea');     // 新增：偏遠地區導航
+    const navFurnitureType = document.getElementById('navFurnitureType');
+    const navRemoteArea = document.getElementById('navRemoteArea');
 
     const calculatorContent = document.getElementById('calculatorContent');
     const historyContent = document.getElementById('historyContent');
-    const furnitureTypeInfoContent = document.getElementById('furnitureTypeInfoContent'); // 新增：家具種類資訊內容
-    const remoteAreaInfoContent = document.getElementById('remoteAreaInfoContent');       // 新增：偏遠地區資訊內容
+    const furnitureTypeInfoContent = document.getElementById('furnitureTypeInfoContent');
+    const remoteAreaInfoContent = document.getElementById('remoteAreaInfoContent');
 
     const historyList = document.getElementById('historyList');
     const clearHistoryBtn = document.getElementById('clearHistoryBtn');
@@ -77,8 +77,10 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             // 顯示計算結果
             outputCBM.textContent = result['材積'].toFixed(0);
+            // 材積數值和重量數值仍是原始的，用於比較顯示
             outputCBMCompare.textContent = result['材積數值'].toFixed(0);
             outputWeightCompare.textContent = result['重量數值'].toFixed(1);
+            // 計費基準現在會顯示 '材積價格' 或 '重量價格' 以及對應的金額
             outputChargeableUnitHighlight.textContent = result['計費基準'];
             outputDeliveryArea.textContent = selected_delivery_area;
             outputFurnitureType.textContent = result['家具種類'];
@@ -96,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 furnitureType: furniture_type,
                 deliveryArea: selected_delivery_area,
                 cbm: result['材積'].toFixed(0),
-                chargeableUnit: result['計費基準'],
+                chargeableUnit: result['計費基準'], // 歷史記錄也更新為新的計費基準文本
                 subtotal: result['運費小計'].toFixed(0),
                 remoteFee: result['偏遠地區派送費'].toFixed(0),
                 totalCost: result['總預估運費'].toFixed(0)
@@ -116,12 +118,12 @@ document.addEventListener('DOMContentLoaded', () => {
         renderHistory(); // 每次點擊歷史記錄時重新渲染
     });
 
-    navFurnitureType.addEventListener('click', (e) => { // 新增事件監聽器
+    navFurnitureType.addEventListener('click', (e) => {
         e.preventDefault();
         showContent(navFurnitureType, furnitureTypeInfoContent);
     });
 
-    navRemoteArea.addEventListener('click', (e) => { // 新增事件監聽器
+    navRemoteArea.addEventListener('click', (e) => {
         e.preventDefault();
         showContent(navRemoteArea, remoteAreaInfoContent);
     });
@@ -134,15 +136,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // === 運費計算核心函數 (與上次相同，無需變更) ===
+    // === 運費計算核心函數 - 調整計費基準邏輯 ===
     function calculateShippingCost(length_cm, width_cm, height_cm, weight_kg, furniture_type, is_remote_area, remote_area_name) {
+        // 1. 材積計算
         const cbm = (length_cm * width_cm * height_cm) / 28317;
-        const cbm_rounded = Math.ceil(cbm);
+        const cbm_rounded = Math.ceil(cbm); // 無條件取整
 
-        const chargeable_unit_value = Math.max(cbm_rounded, weight_kg);
-        const chargeable_unit_type = (weight_kg >= cbm_rounded) ? '公斤' : '材積';
-        const chargeable_unit_display_text = `${chargeable_unit_value} ${chargeable_unit_type}`;
-
+        // 2. 獲取收費標準
         const rates = {
             '一般家具': { per_kg: 22, per_cbm: 125 },
             '特殊家具A': { per_kg: 32, per_cbm: 184 },
@@ -155,12 +155,30 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const selected_rate = rates[furniture_type];
-        let shipping_subtotal = chargeable_unit_value * (chargeable_unit_type === '公斤' ? selected_rate.per_kg : selected_rate.per_cbm);
+        
+        // **新的計費基準邏輯**
+        // 計算材積價格
+        const cbm_price = cbm_rounded * selected_rate.per_cbm;
+        // 計算重量價格
+        const weight_price = weight_kg * selected_rate.per_kg;
 
+        // 取材積價格和重量價格中的較大值作為運費小計
+        let shipping_subtotal = Math.max(cbm_price, weight_price);
+
+        // 確定計費基準的顯示文本
+        let chargeable_unit_display_text;
+        if (weight_price >= cbm_price) {
+            chargeable_unit_display_text = `重量價格 (${weight_price.toFixed(0)} 台幣)`; // 顯示實際的價格
+        } else {
+            chargeable_unit_display_text = `材積價格 (${cbm_price.toFixed(0)} 台幣)`; // 顯示實際的價格
+        }
+
+        // 4. 低消處理 (偏遠地區不列入低消)
         if (!is_remote_area && shipping_subtotal < 2000) {
             shipping_subtotal = 2000;
         }
 
+        // 5. 偏遠地區派送費
         let remote_fee = 0;
         if (is_remote_area) {
             const CBM_PER_CUBIC_METER = 35.3;
@@ -195,9 +213,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return {
             "材積": cbm_rounded,
-            "材積數值": cbm_rounded,
-            "重量數值": weight_kg,
-            "計費基準": chargeable_unit_display_text,
+            "材積數值": cbm_rounded,  // 材積的原始數值 (用於比較顯示)
+            "重量數值": weight_kg,    // 重量原始數值 (用於比較顯示)
+            "材積價格": cbm_price,    // 新增：返回材積價格
+            "重量價格": weight_price,  // 新增：返回重量價格
+            "計費基準": chargeable_unit_display_text, // 顯示最終的計費基準（例如：重量價格 (XXX 台幣)）
             "家具種類": furniture_type,
             "運費小計": shipping_subtotal,
             "偏遠地區派送費": remote_fee,
