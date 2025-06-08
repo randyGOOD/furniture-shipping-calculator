@@ -1,0 +1,256 @@
+body {
+    font-family: '微軟正黑體', 'Microsoft JhengHei', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F0F2F5; /* 淺灰色背景，類似圖片 */
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 900px; /* 根據圖片視覺調整最大寬度 */
+    margin: 20px auto; /* 居中並上下留白 */
+    background-color: #FFFFFF; /* 主容器白色背景 */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden; /* 確保圓角生效 */
+}
+
+/* Header 導航欄 */
+.app-header {
+    background-color: #2F4F7F; /* 深藍色 */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+.app-header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+/* 導航 Tabs */
+.nav-tabs {
+    display: flex;
+    background-color: #E6EEF6; /* 淺藍灰色背景 */
+    padding: 0 20px;
+    border-bottom: 1px solid #D0D9E6;
+}
+
+.nav-item {
+    padding: 15px 20px;
+    text-decoration: none;
+    color: #4A5C6F; /* 文字顏色 */
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.nav-item:hover {
+    background-color: #DDE7F2;
+}
+
+.nav-item.active {
+    color: #2F4F7F; /* 選中時的文字顏色 */
+    border-bottom: 3px solid #2F4F7F; /* 選中時的底線顏色 */
+}
+
+/* 計算器卡片 */
+.calculator-card, .info-card {
+    padding: 30px;
+    background-color: #FFFFFF;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #EEE;
+    padding-bottom: 10px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-group input[type="number"],
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #D0D9E6;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box; /* 確保padding不會撐大寬度 */
+    background-color: #F8F9FA; /* 淺色輸入框背景 */
+    color: #333;
+}
+
+.form-group input[type="number"]:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #2F4F7F;
+    box-shadow: 0 0 0 3px rgba(47, 79, 127, 0.2);
+}
+
+.dimensions-group {
+    display: flex;
+    gap: 20px; /* 輸入框之間的間距 */
+    margin-bottom: 20px;
+}
+
+.dim-item {
+    flex: 1; /* 讓三個輸入框平均分佈空間 */
+}
+
+.hint-text {
+    font-size: 14px;
+    color: #888;
+    margin-top: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    background-color: #2F4F7F; /* 深藍色按鈕 */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 20px;
+}
+
+button:hover {
+    background-color: #253C65; /* 按鈕hover效果 */
+}
+
+/* 結果顯示區塊 */
+.results {
+    background-color: #F8F9FA; /* 淺灰色背景 */
+    border: 1px solid #D0D9E6;
+    border-radius: 4px;
+    padding: 20px;
+    margin-top: 30px;
+    color: #333;
+}
+
+.results h2 {
+    font-size: 20px;
+    color: #2F4F7F; /* 標題顏色 */
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.results p {
+    margin-bottom: 10px;
+}
+
+.results p strong {
+    color: #4A5C6F; /* 標籤文字顏色 */
+}
+
+.total-cost {
+    font-size: 22px;
+    font-weight: bold;
+    color: #008000; /* 綠色突出總費用 */
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #D0D9E6;
+}
+
+.footer-alert {
+    background-color: #E6EEF6; /* 淺藍灰色背景 */
+    padding: 15px;
+    border-radius: 4px;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #4A5C6F;
+    text-align: center;
+}
+
+/* Info Cards (家具種類說明, 小提醒) */
+.info-card {
+    background-color: #FFFFFF;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.info-card h2 {
+    font-size: 20px;
+    color: #333;
+    margin-top: 0;
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+.info-card h3 {
+    font-size: 18px;
+    color: #555;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.info-card ul {
+    list-style: disc;
+    margin-left: 20px;
+    padding-left: 0;
+    color: #555;
+}
+
+.info-card li {
+    margin-bottom: 8px;
+}
+
+/* 響應式調整 */
+@media (max-width: 768px) {
+    .main-container {
+        margin: 10px;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .nav-tabs {
+        flex-wrap: wrap;
+        padding: 0 10px;
+    }
+
+    .nav-item {
+        flex: 1 1 auto;
+        text-align: center;
+        padding: 10px 15px;
+    }
+
+    .dimensions-group {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .dim-item {
+        margin-bottom: 15px;
+    }
+
+    .calculator-card, .info-card {
+        padding: 20px;
+    }
+}
