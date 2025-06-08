@@ -284,6 +284,7 @@ button:hover {
     background-color: #c82333;
 }
 
+
 /* 響應式調整 */
 @media (max-width: 768px) {
     .main-container {

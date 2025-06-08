@@ -215,8 +215,8 @@ document.addEventListener('DOMContentLoaded', () => {
             "材積": cbm_rounded,
             "材積數值": cbm_rounded,  // 材積的原始數值 (用於比較顯示)
             "重量數值": weight_kg,    // 重量原始數值 (用於比較顯示)
-            "材積價格": cbm_price,    // 新增：返回材積價格
-            "重量價格": weight_price,  // 新增：返回重量價格
+            "材積價格": cbm_price,    // 返回材積價格 (新增加的，用於內部參考)
+            "重量價格": weight_price,  // 返回重量價格 (新增加的，用於內部參考)
             "計費基準": chargeable_unit_display_text, // 顯示最終的計費基準（例如：重量價格 (XXX 台幣)）
             "家具種類": furniture_type,
             "運費小計": shipping_subtotal,
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    // === 歷史記錄功能相關函數 (與上次相同，無需變更) ===
+    // === 歷史記錄功能相關函數 ===
     function getHistory() {
         const history = localStorage.getItem('shippingHistory');
         return history ? JSON.parse(history) : [];
