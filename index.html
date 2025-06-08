@@ -13,107 +13,133 @@
         </header>
 
         <nav class="nav-tabs">
-            <a href="#" class="nav-item active">運費計算</a>
-            <a href="#" class="nav-item">歷史記錄</a>
-            <a href="#" class="nav-item">家具種類</a>
-            <a href="#" class="nav-item">偏遠地區</a>
+            <a href="#" class="nav-item active" id="navCalculate">運費計算</a>
+            <a href="#" class="nav-item" id="navHistory">歷史記錄</a>
+            <a href="#" class="nav-item" id="navFurnitureType">家具種類</a>
+            <a href="#" class="nav-item" id="navRemoteArea">偏遠地區</a>
         </nav>
 
-        <div class="calculator-card">
-            <div class="section-title">商品尺寸與重量</div>
+        <div id="calculatorContent">
+            <div class="calculator-card">
+                <div class="section-title">商品尺寸與重量</div>
 
-            <div class="form-group">
-                <label for="furnitureType">家具種類</label>
-                <select id="furnitureType">
-                    <option value="一般家具">一般家具</option>
-                    <option value="特殊家具A">特殊家具A</option>
-                    <option value="特殊家具B">特殊家具B</option>
-                    <option value="特殊家具C">特殊家具C</option>
-                </select>
-            </div>
-
-            <div class="dimensions-group">
-                <div class="form-group dim-item">
-                    <label for="length">長 (cm)</label>
-                    <input type="number" id="length" min="1" value="50">
+                <div class="form-group">
+                    <label for="furnitureType">家具種類</label>
+                    <select id="furnitureType">
+                        <option value="一般家具">一般家具</option>
+                        <option value="特殊家具A">特殊家具A</option>
+                        <option value="特殊家具B">特殊家具B</option>
+                        <option value="特殊家具C">特殊家具C</option>
+                    </select>
                 </div>
-                <div class="form-group dim-item">
-                    <label for="width">寬 (cm)</label>
-                    <input type="number" id="width" min="1" value="50">
+
+                <div class="dimensions-group">
+                    <div class="form-group dim-item">
+                        <label for="length">長 (cm)</label>
+                        <input type="number" id="length" min="1" value="50">
+                    </div>
+                    <div class="form-group dim-item">
+                        <label for="width">寬 (cm)</label>
+                        <input type="number" id="width" min="1" value="50">
+                    </div>
+                    <div class="form-group dim-item">
+                        <label for="height">高 (cm)</label>
+                        <input type="number" id="height" min="1" value="50">
+                    </div>
                 </div>
-                <div class="form-group dim-item">
-                    <label for="height">高 (cm)</label>
-                    <input type="number" id="height" min="1" value="50">
+
+                <div class="form-group">
+                    <label for="weight">重量 (kg)</label>
+                    <input type="number" id="weight" min="0.1" step="0.1" value="1">
+                </div>
+
+                <div class="section-title">配送地區</div>
+
+                <div class="form-group">
+                    <label for="deliveryArea">配送地區</label>
+                    <select id="deliveryArea">
+                        <option value="一般地區">一般地區</option>
+                        <option value="東勢區、水里鄉、和平區、大雪山、谷關、新社區、石岡區、伸港鄉、線西鄉、秀水鄉、芬園鄉、芳苑鄉、大村鄉、大城鄉、竹塘鄉、北斗鄉">偏遠地區 (東勢區、水里鄉...)</option>
+                        <option value="三芝、石門、烏來、坪林、石碇、萬里、平溪、雙溪、深坑、福隆、貢寮、三峽、淡水、竹圍、復興、新埔、關西、橫山、北埔、尖石、五峰、寶山、造橋、峨嵋、三灣、芎林、香山、頭屋、銅鑼、三義、通霄、苑裡、大湖、卓蘭、泰安、公館鄉、竹南">偏遠地區 (三芝、石門...)</option>
+                        <option value="名間、四湖鄉、東勢鄉、台西鄉、古坑鄉、口湖鄉、崙背鄉、麥寮、東石鄉、六腳鄉、竹崎鄉、燕巢、內門區、大樹、茄萣、林園、旗津、杉林、美濃、永安、阿蓮、田寮、旗山">偏遠地區 (名間、四湖鄉...)</option>
+                        <option value="布袋、北門區、將軍區、七股區、楠西區、南化區、白河區、東山區、大內區、玉井區、山上區、龍崎區、後壁區、左鎮區">偏遠地區 (布袋、北門區...)</option>
+                        <option value="竹山、鹿谷、集集、中寮、國姓、仁愛、信義、水里、梨山、奧萬大、埔里">偏遠地區 (竹山、鹿谷...)</option>
+                        <option value="陽明山、金山、魚池、南莊、獅潭、那瑪夏區、桃源區、茂林、甲仙、六龜">偏遠地區 (陽明山、金山...)</option>
+                        <option value="阿里山、梅山鄉、番路、中埔鄉、大埔鄉">偏遠地區 (阿里山、梅山鄉...)</option>
+                        <option value="車城、滿洲、小琉球、牡丹、獅子、枋山、春日、枋寮、佳冬、來義、泰武、瑪家、霧臺、三地門、南澳、釣魚臺、恒春、墾丁、鵝鑾鼻">偏遠地區 (車城、滿洲...)</option>
+                    </select>
+                    <p class="hint-text">偏遠地區派送費由台灣地區收取</p>
+                </div>
+
+                <button id="calculateBtn">計算運費</button>
+
+                <div class="results" id="results">
+                    <h2>計算結果:</h2>
+                    <p><strong>材積:</strong> <span id="outputCBM">--</span> 材</p>
+                    <p class="cbm-info">材積計算方式：長(cm) × 寬(cm) × 高(cm) ÷ 28317，計算結果無條件進位。</p>
+
+                    <p>
+                        <strong>計費基準:</strong>
+                        材積 (<span id="outputCBMCompare">--</span> 材)
+                        vs
+                        重量 (<span id="outputWeightCompare">--</span> 公斤)
+                    </p>
+                    <p class="charge-base-highlight">
+                        實際收費以 <strong id="outputChargeableUnitHighlight">--</strong> 為準
+                    </p>
+
+                    <p><strong>配送地區:</strong> <span id="outputDeliveryArea">--</span></p>
+                    <p><strong>家具種類:</strong> <span id="outputFurnitureType">--</span></p>
+                    <p><strong>運費小計:</strong> <span id="outputSubtotal">--</span> 台幣</p>
+                    <p><strong>偏遠地區派送費:</strong> <span id="outputRemoteFee">--</span> 台幣</p>
+                    <p class="total-cost"><strong>總預估運費:</strong> <span id="outputTotal">--</span> 台幣</p>
+                </div>
+
+                <div class="footer-alert">
+                    <p>家具運費試算僅供參考，請依實際狀況為準。</p>
                 </div>
             </div>
-
-            <div class="form-group">
-                <label for="weight">重量 (kg)</label>
-                <input type="number" id="weight" min="0.1" step="0.1" value="1">
-            </div>
-
-            <div class="section-title">配送地區</div>
-
-            <div class="form-group">
-                <label for="deliveryArea">配送地區</label>
-                <select id="deliveryArea">
-                    <option value="一般地區">一般地區</option>
-                    <option value="東勢區、水里鄉、和平區、大雪山、谷關、新社區、石岡區、伸港鄉、線西鄉、秀水鄉、芬園鄉、芳苑鄉、大村鄉、大城鄉、竹塘鄉、北斗鄉">偏遠地區 (東勢區、水里鄉...)</option>
-                    <option value="三芝、石門、烏來、坪林、石碇、萬里、平溪、雙溪、深坑、福隆、貢寮、三峽、淡水、竹圍、復興、新埔、關西、橫山、北埔、尖石、五峰、寶山、造橋、峨嵋、三灣、芎林、香山、頭屋、銅鑼、三義、通霄、苑裡、大湖、卓蘭、泰安、公館鄉、竹南">偏遠地區 (三芝、石門...)</option>
-                    <option value="名間、四湖鄉、東勢鄉、台西鄉、古坑鄉、口湖鄉、崙背鄉、麥寮、東石鄉、六腳鄉、竹崎鄉、燕巢、內門區、大樹、茄萣、林園、旗津、杉林、美濃、永安、阿蓮、田寮、旗山">偏遠地區 (名間、四湖鄉...)</option>
-                    <option value="布袋、北門區、將軍區、七股區、楠西區、南化區、白河區、東山區、大內區、玉井區、山上區、龍崎區、後壁區、左鎮區">偏遠地區 (布袋、北門區...)</option>
-                    <option value="竹山、鹿谷、集集、中寮、國姓、仁愛、信義、水里、梨山、奧萬大、埔里">偏遠地區 (竹山、鹿谷...)</option>
-                    <option value="陽明山、金山、魚池、南莊、獅潭、那瑪夏區、桃源區、茂林、甲仙、六龜">偏遠地區 (陽明山、金山...)</option>
-                    <option value="阿里山、梅山鄉、番路、中埔鄉、大埔鄉">偏遠地區 (阿里山、梅山鄉...)</option>
-                    <option value="車城、滿洲、小琉球、牡丹、獅子、枋山、春日、枋寮、佳冬、來義、泰武、瑪家、霧臺、三地門、南澳、釣魚臺、恒春、墾丁、鵝鑾鼻">偏遠地區 (車城、滿洲...)</option>
-                </select>
-                <p class="hint-text">偏遠地區派送費由台灣地區收取</p>
-            </div>
-
-            <button id="calculateBtn">計算運費</button>
-
-            <div class="results" id="results">
-                <h2>計算結果:</h2>
-                <p><strong>材積:</strong> <span id="outputCBM">--</span> 材</p>
-                <p><strong>計費基準:</strong> <span id="outputChargeableUnit">--</span></p>
-                <p><strong>家具種類:</strong> <span id="outputFurnitureType">--</span></p>
-                <p><strong>運費小計:</strong> <span id="outputSubtotal">--</span> 台幣</p>
-                <p><strong>偏遠地區派送費:</strong> <span id="outputRemoteFee">--</span> 台幣</p>
-                <p class="total-cost"><strong>總預估運費:</strong> <span id="outputTotal">--</span> 台幣</p>
-            </div>
-
-            <div class="footer-alert">
-                <p>家具運費試算僅供參考，請依實際狀況為準。</p>
+        </div> <div id="historyContent" class="history-content" style="display: none;">
+            <div class="info-card">
+                <h2>歷史計算記錄</h2>
+                <div id="historyList">
+                    <p class="no-history-message">目前沒有歷史記錄。</p>
+                </div>
+                <button id="clearHistoryBtn" class="clear-button" style="display: none;">清除歷史記錄</button>
             </div>
         </div>
 
-        <div class="info-card">
-            <h2>家具種類說明</h2>
-            <p>為了幫助您更好地選擇家具種類，以下是各類家具的大致產品範圍：</p>
-            <h3>一般家具:</h3>
-            <p><strong>主要包括:</strong> 真皮沙發、電動沙發、梳妝台、床架床組、茶几、邊几、餐桌、餐邊櫃、餐椅、凳子、衣櫃、玻璃衣櫃、書桌、書櫃、玄關櫃、置物架等。</p>
-            <p><strong>特性:</strong> 通常為木質、金屬、布藝等常規材料製成的家具。</p>
-            <h3>特殊家具A:</h3>
-            <p><strong>主要包括:</strong> 大理石、岩板、石英石、陶瓷類家具（如餐桌、茶几等）、洗手盆、浴櫃、鏡櫃、一般馬桶、浴缸、廚房水槽、床墊、地毯、PVC地板、木地板、窗簾、洞洞板、花灑、電熱毛巾架、寵物相關用品等。</p>
-            <p><strong>特性:</strong> 包含易碎、重型、捲材或特殊材質的家居用品。</p>
-            <h3>特殊家具B:</h3>
-            <p><strong>主要包括:</strong> 門、鏡子、玻璃屏風等。</p>
-            <p><strong>特性:</strong> 通常為較大面積的易碎品或特殊結構建材。</p>
-            <h3>特殊家具C:</h3>
-            <p><strong>主要包括:</strong> 智能馬桶。</p>
-            <p><strong>特性:</strong> 含有精密電子元件且包裝特殊的衛浴產品。</p>
+        <div id="furnitureTypeInfoContent" class="info-content" style="display: none;">
+            <div class="info-card">
+                <h2>家具種類說明</h2>
+                <p>為了幫助您更好地選擇家具種類，以下是各類家具的大致產品範圍：</p>
+                <h3>一般家具:</h3>
+                <p><strong>主要包括:</strong> 真皮沙發、電動沙發、梳妝台、床架床組、茶几、邊几、餐桌、餐邊櫃、餐椅、凳子、衣櫃、玻璃衣櫃、書桌、書櫃、玄關櫃、置物架等。</p>
+                <p><strong>特性:</strong> 通常為木質、金屬、布藝等常規材料製成的家具。</p>
+                <h3>特殊家具A:</h3>
+                <p><strong>主要包括:</strong> 大理石、岩板、石英石、陶瓷類家具（如餐桌、茶几等）、洗手盆、浴櫃、鏡櫃、一般馬桶、浴缸、廚房水槽、床墊、地毯、PVC地板、木地板、窗簾、洞洞板、花灑、電熱毛巾架、寵物相關用品等。</p>
+                <p><strong>特性:</strong> 包含易碎、重型、捲材或特殊材質的家居用品。</p>
+                <h3>特殊家具B:</h3>
+                <p><strong>主要包括:</strong> 門、鏡子、玻璃屏風等。</p>
+                <p><strong>特性:</strong> 通常為較大面積的易碎品或特殊結構建材。</p>
+                <h3>特殊家具C:</h3>
+                <p><strong>主要包括:</strong> 智能馬桶。</p>
+                <p><strong>特性:</strong> 含有精密電子元件且包裝特殊的衛浴產品。</p>
+            </div>
         </div>
 
-        <div class="info-card">
-            <h2>小提醒</h2>
-            <ul>
-                <li><strong>打木架(實報實銷)、驗貨、拆木架、木架回收、上樓(需溝通)、組裝服務</strong>請洽客服。</li>
-                <li>貨物入倉皆以入倉時<strong>實秤實量</strong>為準。</li>
-                <li>台灣物流配送業者（偏遠費、超長費、超重費、轉板費），依台灣物流派送業者報價，<strong>實報實銷</strong>。</li>
-                <li>商品計重皆以<strong>加固包裝後，實際重量材積計算</strong>。</li>
-                <li>倉儲<strong>免費90天</strong>，需延長免費倉儲洽客服。</li>
-                <li>運輸時間約<strong>12~15個工作天</strong> (國定假日、颱風天災等不可抗力之因素不適用)。</li>
-            </ul>
+        <div id="remoteAreaInfoContent" class="info-content" style="display: none;">
+            <div class="info-card">
+                <h2>小提醒</h2>
+                <ul>
+                    <li><strong>打木架(實報實銷)、驗貨、拆木架、木架回收、上樓(需溝通)、組裝服務</strong>請洽客服。</li>
+                    <li>貨物入倉皆以入倉時<strong>實秤實量</strong>為準。</li>
+                    <li>台灣物流配送業者（偏遠費、超長費、超重費、轉板費），依台灣物流派送業者報價，<strong>實報實銷</strong>。</li>
+                    <li>商品計重皆以<strong>加固包裝後，實際重量材積計算</strong>。</li>
+                    <li>倉儲<strong>免費90天</strong>，需延長免費倉儲洽客服。</li>
+                    <li>運輸時間約<strong>12~15個工作天</strong> (國定假日、颱風天災等不可抗力之因素不適用)。</li>
+                </ul>
+            </div>
         </div>
 
     </div>

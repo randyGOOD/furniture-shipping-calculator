@@ -1,19 +1,57 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // === DOM 元素獲取 ===
     const lengthInput = document.getElementById('length');
     const widthInput = document.getElementById('width');
     const heightInput = document.getElementById('height');
     const weightInput = document.getElementById('weight');
     const furnitureTypeSelect = document.getElementById('furnitureType');
-    const deliveryAreaSelect = document.getElementById('deliveryArea'); // 使用新的配送地區下拉選單ID
+    const deliveryAreaSelect = document.getElementById('deliveryArea');
     const calculateBtn = document.getElementById('calculateBtn');
 
+    // 輸出結果元素
     const outputCBM = document.getElementById('outputCBM');
-    const outputChargeableUnit = document.getElementById('outputChargeableUnit');
+    const outputCBMCompare = document.getElementById('outputCBMCompare');
+    const outputWeightCompare = document.getElementById('outputWeightCompare');
+    const outputChargeableUnitHighlight = document.getElementById('outputChargeableUnitHighlight');
+    const outputDeliveryArea = document.getElementById('outputDeliveryArea');
     const outputFurnitureType = document.getElementById('outputFurnitureType');
     const outputSubtotal = document.getElementById('outputSubtotal');
     const outputRemoteFee = document.getElementById('outputRemoteFee');
     const outputTotal = document.getElementById('outputTotal');
 
+    // 導航和內容區塊元素
+    const navCalculate = document.getElementById('navCalculate');
+    const navHistory = document.getElementById('navHistory');
+    const navFurnitureType = document.getElementById('navFurnitureType'); // 新增：家具種類導航
+    const navRemoteArea = document.getElementById('navRemoteArea');     // 新增：偏遠地區導航
+
+    const calculatorContent = document.getElementById('calculatorContent');
+    const historyContent = document.getElementById('historyContent');
+    const furnitureTypeInfoContent = document.getElementById('furnitureTypeInfoContent'); // 新增：家具種類資訊內容
+    const remoteAreaInfoContent = document.getElementById('remoteAreaInfoContent');       // 新增：偏遠地區資訊內容
+
+    const historyList = document.getElementById('historyList');
+    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+    const noHistoryMessage = document.querySelector('.no-history-message');
+
+    // === 通用內容切換函數 ===
+    function showContent(activeNavLink, contentToShow) {
+        // 移除所有導航項的 active 類別
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        // 為點擊的導航項添加 active 類別
+        activeNavLink.classList.add('active');
+
+        // 隱藏所有內容區塊
+        calculatorContent.style.display = 'none';
+        historyContent.style.display = 'none';
+        furnitureTypeInfoContent.style.display = 'none';
+        remoteAreaInfoContent.style.display = 'none';
+
+        // 顯示指定的內容區塊
+        contentToShow.style.display = 'block';
+    }
+
+    // === 事件監聽器 ===
     calculateBtn.addEventListener('click', () => {
         const length_cm = parseFloat(lengthInput.value);
         const width_cm = parseFloat(widthInput.value);
@@ -22,9 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const furniture_type = furnitureTypeSelect.value;
         const selected_delivery_area = deliveryAreaSelect.value;
 
-        // 判斷是否為偏遠地區
         const is_remote_area = (selected_delivery_area !== '一般地區');
-        const remote_area_group_name = is_remote_area ? selected_delivery_area : ""; // 如果是偏遠地區，則傳遞選擇的地區組
+        const remote_area_group_name = is_remote_area ? selected_delivery_area : "";
 
         // 輸入驗證
         if (isNaN(length_cm) || isNaN(width_cm) || isNaN(height_cm) || isNaN(weight_kg) ||
@@ -33,35 +70,79 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 運費計算邏輯
         const result = calculateShippingCost(length_cm, width_cm, height_cm, weight_kg, furniture_type, is_remote_area, remote_area_group_name);
 
-        // 顯示結果
         if (result.error) {
             alert(result.error);
         } else {
-            outputCBM.textContent = result['材積'].toFixed(0); // 材積顯示為整數
-            outputChargeableUnit.textContent = result['計費基準'];
+            // 顯示計算結果
+            outputCBM.textContent = result['材積'].toFixed(0);
+            outputCBMCompare.textContent = result['材積數值'].toFixed(0);
+            outputWeightCompare.textContent = result['重量數值'].toFixed(1);
+            outputChargeableUnitHighlight.textContent = result['計費基準'];
+            outputDeliveryArea.textContent = selected_delivery_area;
             outputFurnitureType.textContent = result['家具種類'];
             outputSubtotal.textContent = result['運費小計'].toFixed(0);
             outputRemoteFee.textContent = result['偏遠地區派送費'].toFixed(0);
             outputTotal.textContent = result['總預估運費'].toFixed(0);
+
+            // 將當前計算結果存入歷史記錄
+            saveCalculationToHistory({
+                date: new Date().toLocaleString(), // 儲存日期時間
+                length: length_cm,
+                width: width_cm,
+                height: height_cm,
+                weight: weight_kg,
+                furnitureType: furniture_type,
+                deliveryArea: selected_delivery_area,
+                cbm: result['材積'].toFixed(0),
+                chargeableUnit: result['計費基準'],
+                subtotal: result['運費小計'].toFixed(0),
+                remoteFee: result['偏遠地區派送費'].toFixed(0),
+                totalCost: result['總預估運費'].toFixed(0)
+            });
         }
     });
 
-    // 運費計算核心函數 (從之前的Python邏輯轉換為JavaScript)
-    function calculateShippingCost(length_cm, width_cm, height_cm, weight_kg, furniture_type, is_remote_area, remote_area_name) {
-        // 1. 材積計算
-        const cbm = (length_cm * width_cm * height_cm) / 28317;
-        const cbm_rounded = Math.ceil(cbm); // 無條件取整
+    // 導航欄點擊事件
+    navCalculate.addEventListener('click', (e) => {
+        e.preventDefault();
+        showContent(navCalculate, calculatorContent);
+    });
 
-        // 2. 確定收費標準 (材積 vs 重量)
+    navHistory.addEventListener('click', (e) => {
+        e.preventDefault();
+        showContent(navHistory, historyContent);
+        renderHistory(); // 每次點擊歷史記錄時重新渲染
+    });
+
+    navFurnitureType.addEventListener('click', (e) => { // 新增事件監聽器
+        e.preventDefault();
+        showContent(navFurnitureType, furnitureTypeInfoContent);
+    });
+
+    navRemoteArea.addEventListener('click', (e) => { // 新增事件監聽器
+        e.preventDefault();
+        showContent(navRemoteArea, remoteAreaInfoContent);
+    });
+
+    clearHistoryBtn.addEventListener('click', () => {
+        if (confirm('確定要清除所有歷史記錄嗎？')) {
+            localStorage.removeItem('shippingHistory');
+            renderHistory();
+            alert('歷史記錄已清除。');
+        }
+    });
+
+    // === 運費計算核心函數 (與上次相同，無需變更) ===
+    function calculateShippingCost(length_cm, width_cm, height_cm, weight_kg, furniture_type, is_remote_area, remote_area_name) {
+        const cbm = (length_cm * width_cm * height_cm) / 28317;
+        const cbm_rounded = Math.ceil(cbm);
+
         const chargeable_unit_value = Math.max(cbm_rounded, weight_kg);
         const chargeable_unit_type = (weight_kg >= cbm_rounded) ? '公斤' : '材積';
-        const chargeable_unit_display = `${chargeable_unit_value} ${chargeable_unit_type}`;
+        const chargeable_unit_display_text = `${chargeable_unit_value} ${chargeable_unit_type}`;
 
-
-        // 3. 獲取收費標準
         const rates = {
             '一般家具': { per_kg: 22, per_cbm: 125 },
             '特殊家具A': { per_kg: 32, per_cbm: 184 },
@@ -74,22 +155,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const selected_rate = rates[furniture_type];
-        
-        // 實際運費計算 (材積跟重量取大值)
         let shipping_subtotal = chargeable_unit_value * (chargeable_unit_type === '公斤' ? selected_rate.per_kg : selected_rate.per_cbm);
 
-        // 4. 低消處理 (偏遠地區不列入低消)
         if (!is_remote_area && shipping_subtotal < 2000) {
             shipping_subtotal = 2000;
         }
 
-        // 5. 偏遠地區派送費
         let remote_fee = 0;
         if (is_remote_area) {
-            // 將「方」換算成「材積」: 1方 = 35.3材
             const CBM_PER_CUBIC_METER = 35.3;
-
-            // 偏遠地區費率字典 (每方費用)
             const remote_rates_per_cubic_meter = {
                 '東勢區、水里鄉、和平區、大雪山、谷關、新社區、石岡區、伸港鄉、線西鄉、秀水鄉、芬園鄉、芳苑鄉、大村鄉、大城鄉、竹塘鄉、北斗鄉': 1800,
                 '三芝、石門、烏來、坪林、石碇、萬里、平溪、雙溪、深坑、福隆、貢寮、三峽、淡水、竹圍、復興、新埔、關西、橫山、北埔、尖石、五峰、寶山、造橋、峨嵋、三灣、芎林、香山、頭屋、銅鑼、三義、通霄、苑裡、大湖、卓蘭、泰安、公館鄉、竹南': 2000,
@@ -121,11 +195,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
         return {
             "材積": cbm_rounded,
-            "計費基準": chargeable_unit_display,
+            "材積數值": cbm_rounded,
+            "重量數值": weight_kg,
+            "計費基準": chargeable_unit_display_text,
             "家具種類": furniture_type,
             "運費小計": shipping_subtotal,
             "偏遠地區派送費": remote_fee,
             "總預估運費": total_cost
         };
     }
+
+    // === 歷史記錄功能相關函數 (與上次相同，無需變更) ===
+    function getHistory() {
+        const history = localStorage.getItem('shippingHistory');
+        return history ? JSON.parse(history) : [];
+    }
+
+    function saveCalculationToHistory(calculationResult) {
+        const history = getHistory();
+        history.unshift(calculationResult);
+        if (history.length > 10) { // 只保留最新的10條記錄
+            history.pop();
+        }
+        localStorage.setItem('shippingHistory', JSON.stringify(history));
+    }
+
+    function renderHistory() {
+        const history = getHistory();
+        historyList.innerHTML = ''; // 清空現有列表
+
+        if (history.length === 0) {
+            noHistoryMessage.style.display = 'block';
+            clearHistoryBtn.style.display = 'none';
+        } else {
+            noHistoryMessage.style.display = 'none';
+            clearHistoryBtn.style.display = 'block';
+            history.forEach((item, index) => {
+                const historyItemDiv = document.createElement('div');
+                historyItemDiv.classList.add('history-item');
+                historyItemDiv.innerHTML = `
+                    <p><strong>日期:</strong> ${item.date}</p>
+                    <p><strong>尺寸:</strong> ${item.length}x${item.width}x${item.height} cm</p>
+                    <p><strong>重量:</strong> ${item.weight} kg</p>
+                    <p><strong>家具種類:</strong> ${item.furnitureType}</p>
+                    <p><strong>配送地區:</strong> ${item.deliveryArea}</p>
+                    <p><strong>計費材積:</strong> ${item.cbm} 材</p>
+                    <p><strong>計費基準:</strong> ${item.chargeableUnit}</p>
+                    <p><strong>運費小計:</strong> ${item.subtotal} 台幣</p>
+                    <p><strong>偏遠地區派送費:</strong> ${item.remoteFee} 台幣</p>
+                    <p class="total-cost"><strong>總預估運費:</strong> ${item.totalCost} 台幣</p>
+                `;
+                historyList.appendChild(historyItemDiv);
+            });
+        }
+    }
+
+    // 頁面載入時，預設顯示計算器內容
+    showContent(navCalculate, calculatorContent);
 });
