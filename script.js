@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // === 運費計算核心函數 - 調整計費基準邏輯 ===
+    // === 運費計算核心函數 ===
     function calculateShippingCost(length_cm, width_cm, height_cm, weight_kg, furniture_type, is_remote_area, remote_area_name) {
         // 1. 材積計算
         const cbm = (length_cm * width_cm * height_cm) / 28317;
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const selected_rate = rates[furniture_type];
         
-        // **新的計費基準邏輯**
+        // **新的計費基準邏輯：材積價格與重量價格取大者**
         // 計算材積價格
         const cbm_price = cbm_rounded * selected_rate.per_cbm;
         // 計算重量價格
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 5. 偏遠地區派送費
         let remote_fee = 0;
         if (is_remote_area) {
-            const CBM_PER_CUBIC_METER = 35.3;
+            const CBM_PER_CUBIC_METER = 35.3; // 1立方公尺約等於 35.3 材
             const remote_rates_per_cubic_meter = {
                 '東勢區、水里鄉、和平區、大雪山、谷關、新社區、石岡區、伸港鄉、線西鄉、秀水鄉、芬園鄉、芳苑鄉、大村鄉、大城鄉、竹塘鄉、北斗鄉': 1800,
                 '三芝、石門、烏來、坪林、石碇、萬里、平溪、雙溪、深坑、福隆、貢寮、三峽、淡水、竹圍、復興、新埔、關西、橫山、北埔、尖石、五峰、寶山、造橋、峨嵋、三灣、芎林、香山、頭屋、銅鑼、三義、通霄、苑裡、大湖、卓蘭、泰安、公館鄉、竹南': 2000,
@@ -195,6 +195,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             let found_rate_per_cubic_meter = 0;
             for (const areas in remote_rates_per_cubic_meter) {
+                // 這裡的判斷邏輯是直接比較 selected_delivery_area (選單的完整文字)
+                // 和 remote_rates_per_cubic_meter 的 key 是否一致
+                // 這要求選單的 value 和 remote_rates_per_cubic_meter 的 key 完全匹配
                 if (areas === remote_area_name) { 
                     found_rate_per_cubic_meter = remote_rates_per_cubic_meter[areas];
                     break;
@@ -203,9 +206,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (found_rate_per_cubic_meter > 0) {
                 const cbm_to_cubic_meters = cbm_rounded / CBM_PER_CUBIC_METER;
-                const chargeable_cubic_meters = Math.max(cbm_to_cubic_meters, 1);
+                // 偏遠地區派送費至少從 1 方開始計費
+                const chargeable_cubic_meters = Math.max(cbm_to_cubic_meters, 1); 
                 remote_fee = chargeable_cubic_meters * found_rate_per_cubic_meter;
-                remote_fee = Math.ceil(remote_fee);
+                remote_fee = Math.ceil(remote_fee); // 偏遠費也無條件進位
             }
         }
 
@@ -215,8 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
             "材積": cbm_rounded,
             "材積數值": cbm_rounded,  // 材積的原始數值 (用於比較顯示)
             "重量數值": weight_kg,    // 重量原始數值 (用於比較顯示)
-            "材積價格": cbm_price,    // 返回材積價格 (新增加的，用於內部參考)
-            "重量價格": weight_price,  // 返回重量價格 (新增加的，用於內部參考)
+            "材積價格": cbm_price,    // 返回材積價格 (用於內部參考或進階顯示)
+            "重量價格": weight_price,  // 返回重量價格 (用於內部參考或進階顯示)
             "計費基準": chargeable_unit_display_text, // 顯示最終的計費基準（例如：重量價格 (XXX 台幣)）
             "家具種類": furniture_type,
             "運費小計": shipping_subtotal,
